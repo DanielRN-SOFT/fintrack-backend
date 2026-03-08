@@ -1,0 +1,148 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model categorias {
+  id          Int             @id @default(autoincrement())
+  nombre      String          @db.VarChar(60)
+  tipo        categorias_tipo
+  created_at  DateTime        @default(now()) @db.Timestamp(0)
+  usuarios_id Int
+  updated_at  DateTime?       @db.Timestamp(0)
+  usuarios    usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categorias_usuarios1")
+  conceptos   conceptos[]
+
+  @@index([usuarios_id], map: "fk_categorias_usuarios1_idx")
+  @@index([usuarios_id], map: "idx_usuario_categoria")
+}
+
+model conceptos {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(100)
+  created_at    DateTime        @default(now()) @db.Timestamp(0)
+  categorias_id Int
+  usuarios_id   Int
+  updated_at    DateTime?       @db.Timestamp(0)
+  categorias    categorias      @relation(fields: [categorias_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptos_categorias1")
+  usuarios      usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptos_usuarios1")
+  transacciones transacciones[]
+
+  @@index([categorias_id], map: "fk_conceptos_categorias1_idx")
+  @@index([usuarios_id], map: "fk_conceptos_usuarios1_idx")
+}
+
+model cuentas {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(75)
+  tipo          cuentas_tipo
+  saldo_inicial Decimal         @db.Decimal(10, 2)
+  created_at    DateTime        @default(now()) @db.Timestamp(0)
+  usuarios_id   Int
+  updated_at    DateTime?       @db.Timestamp(0)
+  usuarios      usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cuentas_usuarios1")
+  transacciones transacciones[]
+
+  @@index([usuarios_id], map: "fk_cuentas_usuarios1_idx")
+  @@index([usuarios_id], map: "idx_usuario_cuenta")
+}
+
+model metas {
+  id             Int       @id @default(autoincrement())
+  nombre         String    @db.VarChar(75)
+  monto_objetivo Decimal   @db.Decimal(10, 2)
+  monto_actual   Decimal   @db.Decimal(10, 2)
+  fecha_limite   DateTime  @db.Date
+  created_at     DateTime  @default(now()) @db.Timestamp(0)
+  usuarios_id    Int
+  updated_at     DateTime? @db.Timestamp(0)
+  usuarios       usuarios  @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_metas_usuarios1")
+
+  @@index([usuarios_id], map: "fk_metas_usuarios1_idx")
+}
+
+model roles {
+  id       Int          @id @default(autoincrement())
+  nombre   roles_nombre
+  usuarios usuarios[]
+}
+
+model transacciones {
+  id           Int                   @id @default(autoincrement())
+  tipo         transacciones_tipo
+  fecha        DateTime              @db.Date
+  valor        Decimal               @db.Decimal(10, 2)
+  descripcion  String                @db.Text
+  created_at   DateTime              @default(now()) @db.Timestamp(0)
+  estado       transacciones_estado? @default(Activa)
+  usuarios_id  Int
+  cuentas_id   Int
+  conceptos_id Int
+  updated_at   DateTime?             @db.Timestamp(0)
+  conceptos    conceptos             @relation(fields: [conceptos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_conceptos1")
+  cuentas      cuentas               @relation(fields: [cuentas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_cuentas1")
+  usuarios     usuarios              @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_usuarios1")
+
+  @@index([conceptos_id], map: "fk_transacciones_conceptos1_idx")
+  @@index([cuentas_id], map: "fk_transacciones_cuentas1_idx")
+  @@index([usuarios_id], map: "fk_transacciones_usuarios1_idx")
+  @@index([usuarios_id, fecha], map: "idx_usuario_fecha")
+}
+
+model usuarios {
+  id            Int             @id @default(autoincrement())
+  nombre        String          @db.VarChar(75)
+  email         String          @unique(map: "email_UNIQUE") @db.VarChar(100)
+  password      String          @db.VarChar(255)
+  telefono      String?         @db.VarChar(20)
+  token         String?         @db.VarChar(255)
+  confirmado    Boolean?        @default(false)
+  estado        usuarios_estado
+  created_at    DateTime        @default(now()) @db.Timestamp(0)
+  roles_id      Int
+  updated_at    DateTime?       @db.Timestamp(0)
+  categorias    categorias[]
+  conceptos     conceptos[]
+  cuentas       cuentas[]
+  metas         metas[]
+  transacciones transacciones[]
+  roles         roles           @relation(fields: [roles_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_roles1")
+
+  @@index([roles_id], map: "fk_usuarios_roles1_idx")
+}
+
+enum roles_nombre {
+  Administrador
+  Usuario
+}
+
+enum transacciones_tipo {
+  Ingreso
+  Egreso
+}
+
+enum categorias_tipo {
+  Ingreso
+  Egreso
+}
+
+enum cuentas_tipo {
+  Cash
+  Banco
+  Digital
+}
+
+enum transacciones_estado {
+  Activa
+  Anulada
+}
+
+enum usuarios_estado {
+  Activo
+  Inactivo
+}
