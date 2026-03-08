@@ -1,0 +1,28 @@
+{
+  "name": "fintrack-backend",
+  "version": "1.0.0",
+  "description": "FinTrack es un sistema web independiente que funciona como una herramienta de gestión financiera personal accesible desde cualquier navegador web. El sistema almacenará información financiera personal del usuario y permitirá visualizar estadísticas y reportes sobre ingresos, egresos y ahorro.",
+  "keywords": [
+    "Finanzas",
+    "Ingresos",
+    "Egresos",
+    "Contabilidad-Personal"
+  ],
+  "license": "ISC",
+  "author": "DanielRN-SOFT",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mysql2": "^3.19.0",
+    "nodemon": "^3.1.14"
+  }
+}
