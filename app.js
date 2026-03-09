@@ -1,6 +1,7 @@
 // Dependencias a utilizar
 import express from "express";
 import cors from "cors";
+import usuarioRouter from "./src/routes/usuario.route.js";
 
 // Inicialiazacion de la aplicacion
 const app = express();
@@ -11,6 +12,7 @@ app.use(cors());
 
 
 // Rutas
+app.use("/api", usuarioRouter);
 
 
 export default app;
