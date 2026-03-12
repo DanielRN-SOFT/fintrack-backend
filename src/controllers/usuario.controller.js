@@ -1,17 +1,77 @@
 import { usuarios_estado } from "@prisma/client";
 import prisma from "../../prismaClient.js";
 import bcrypt from "bcryptjs";
+import generarId from "../helpers/generarId.js";
 
 export const createUsuarios = async (req, res) => {
   try {
+    // Descomprimir los datos y hashear el password
     const data = {
       nombre: req.body.nombre,
       email: req.body.email,
-      password: bcrypt.hashSync(req.body.nombre, 10),
+      password: bcrypt.hashSync(req.body.password, 10),
       roles_id: req.body.roles_id,
-      estado: usuarios_estado.Activo
+      estado: usuarios_estado.Activo,
+      token: generarId(),
     };
+
+    // Crear un usuario con PRISMA
     const results = await prisma.usuarios.create({
+      data,
+    });
+
+    res.json({ results });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUsuarios = async (req, res) => {
+  try {
+    // Obtener todos los usuarios con PRISMA
+    const results = await prisma.usuarios.findMany();
+    res.json({ results });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getUsuarioById = async (req, res) => {
+  try {
+    // Obtener el id
+    let { id } = req.params;
+    id = parseInt(id);
+    // Encontrar un usuario por su id con PRISMA
+    const results = await prisma.usuarios.findUnique({ where: { id } });
+    res.json({ results });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateUsuarios = async (req, res) => {
+  try {
+    let { id } = req.params;
+    id = parseInt(id);
+
+    const { password } = req.body;
+    const usuario = await prisma.usuarios.findUnique({ where: { id } });
+
+    // Descomprimir los datos y hashear el password
+    const data = {
+      nombre: req.body.nombre,
+      email: req.body.email,
+      roles_id: req.body.roles_id,
+      estado: usuarios_estado.Activo,
+      telefono: req.body.telefono,
+    };
+
+    if (!(await bcrypt.compare(password, usuario.password))) {
+      data.password = bcrypt.hashSync(password, 10);
+    }
+
+    const results = await prisma.usuarios.update({
+      where: { id },
       data,
     });
 
@@ -20,14 +80,3 @@ export const createUsuarios = async (req, res) => {
     console.log(error);
   }
 };
-
-
-export const getUsuarios = async (req, res) => {
-  try {
-    const results = await prisma.usuarios.findMany();
-    res.json(results);
-  } catch (error) {
-    console.log(error);
-  }
-};
-
