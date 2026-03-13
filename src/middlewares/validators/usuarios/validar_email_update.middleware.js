@@ -7,38 +7,21 @@ const validarEmail = async (req, res, next) => {
     let { id } = req.params;
     id = parseInt(id);
 
-    // Encontrar el email actual
-    const usuario = await prisma.usuarios.findUnique({ where: { email, id } });
+    // Comparar con el email actual
+    if (req.usuario.email !== email) {
+      const existeEmail = await prisma.usuarios.findUnique({
+        where: { email },
+      });
 
-    // Si no existe
-    if (usuario) {
-      // Validar que el email ingresado sea diferente al actual
-      if (!usuario.email == email) {
-        metodoValidacion(email, res);
+      if (existeEmail) {
+        const error = new Error("Ese email ya esta registrado");
+        return res.status(400).json({ msg: error.message });
       }
-    } else {
-      metodoValidacion(email, res);
     }
 
-    // Si no existe el email continue al controlador
     next();
   } catch (error) {
     console.log(error);
-  }
-};
-
-const metodoValidacion = async (email, res) => {
-  // Buscar el nuevo email que digito el usuario
-  const emailExiste = await prisma.usuarios.findUnique({
-    where: {
-      email,
-    },
-  });
-
-  if (emailExiste) {
-    return res
-      .status(400)
-      .json({ msg: "Ese email ya esta registrado", error: true });
   }
 };
 

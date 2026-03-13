@@ -11,7 +11,7 @@ const router = Router();
 router.get("/auth/confirmar/:token", authCtr.confirmarUsuario);
 router.post("/auth/autenticar", authCtr.autenticarUsuario);
 router.post("/auth/olvide-password", authCtr.olvidePassword);
-router.route("/auth/olvide-password/:token").get(authCtr.comprobarToken).post(authCtr.actualizarPassword);
+router.route("/auth/olvide-password/:token").get(authCtr.comprobarToken).post(authCtr.recuperarPassword);
 
 // Rutas privadas
 router.get("/usuarios", checkAuth, usuarioCtr.getUsuarios);

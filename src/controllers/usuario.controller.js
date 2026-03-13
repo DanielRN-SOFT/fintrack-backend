@@ -57,6 +57,11 @@ export const updateUsuarios = async (req, res) => {
     const { password } = req.body;
     const usuario = await prisma.usuarios.findUnique({ where: { id } });
 
+    if (!usuario) {
+      const error = new Error("El usuario no existe");
+      return res.status(400).json({ msg: error.message });
+    }
+
     // Descomprimir los datos y hashear el password
     const data = {
       nombre: req.body.nombre,

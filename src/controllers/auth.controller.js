@@ -105,7 +105,7 @@ export const comprobarToken = async (req, res) => {
   }
 };
 
-export const actualizarPassword = async (req, res) => {
+export const recuperarPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
