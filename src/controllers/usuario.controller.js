@@ -59,7 +59,7 @@ export const updateUsuarios = async (req, res) => {
 
     if (!usuario) {
       const error = new Error("El usuario no existe");
-      return res.status(400).json({ msg: error.message });
+      return res.status(400).json({ msg: error.message, success: false });
     }
 
     // Descomprimir los datos y hashear el password
@@ -74,6 +74,60 @@ export const updateUsuarios = async (req, res) => {
     if (!(await bcrypt.compare(password, usuario.password))) {
       data.password = bcrypt.hashSync(password, 10);
     }
+
+    const results = await prisma.usuarios.update({
+      where: { id },
+      data,
+    });
+
+    res.json(results);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const inactivarUsuarios = async (req, res) => {
+  try {
+    let { id } = req.params;
+    id = parseInt(id);
+    const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
+
+    if (!existeUsuario) {
+      const error = new Error("El usuario no existe");
+      return res.status(400).json({ msg: error.message, success: false });
+    }
+    const estado = "Inactivo";
+
+    let data = {
+      estado,
+    };
+
+    const results = await prisma.usuarios.update({
+      where: { id },
+      data,
+    });
+
+    res.json(results);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const activarUsuarios = async (req, res) => {
+  try {
+    let { id } = req.params;
+    id = parseInt(id);
+    const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
+
+    if (!existeUsuario) {
+      const error = new Error("El usuario no existe");
+      return res.status(400).json({ msg: error.message, success: false });
+    }
+    const estado = "Activo";
+
+    let data = {
+      estado,
+    };
 
     const results = await prisma.usuarios.update({
       where: { id },
