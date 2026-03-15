@@ -39,8 +39,8 @@ export const getUsuarios = async (req, res) => {
 export const getUsuarioById = async (req, res) => {
   try {
     // Obtener el id
-    let { id } = req.params;
-    id = parseInt(id);
+    let id = parseInt(req.params.id);
+
     // Encontrar un usuario por su id con PRISMA
     const results = await prisma.usuarios.findUnique({ where: { id } });
     res.json({ results });
@@ -51,8 +51,7 @@ export const getUsuarioById = async (req, res) => {
 
 export const updateUsuarios = async (req, res) => {
   try {
-    let { id } = req.params;
-    id = parseInt(id);
+    let id = parseInt(req.params.id);
 
     const { password } = req.body;
     const usuario = await prisma.usuarios.findUnique({ where: { id } });
@@ -88,8 +87,7 @@ export const updateUsuarios = async (req, res) => {
 
 export const inactivarUsuarios = async (req, res) => {
   try {
-    let { id } = req.params;
-    id = parseInt(id);
+    const id = parseInt(req.params.id);
     const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
 
     if (!existeUsuario) {
@@ -115,8 +113,7 @@ export const inactivarUsuarios = async (req, res) => {
 
 export const activarUsuarios = async (req, res) => {
   try {
-    let { id } = req.params;
-    id = parseInt(id);
+    let id = parseInt(req.params.id);
     const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
 
     if (!existeUsuario) {
