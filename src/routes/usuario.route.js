@@ -6,15 +6,12 @@ import validarEmailUpdate from "../middlewares/validators/usuarios/validar_email
 
 const router = Router();
 
+// Rutas publicas
+router.post("/usuarios", validarEmailCreate, usuarioCtr.createUsuarios);
+
 // Rutas privadas
 router.get("/usuarios", checkAuth, usuarioCtr.getUsuarios);
 router.get("/usuarios/:id", checkAuth, usuarioCtr.getUsuarioById);
-router.post(
-  "/usuarios",
-  checkAuth,
-  validarEmailCreate,
-  usuarioCtr.createUsuarios,
-);
 router.put(
   "/usuarios/:id",
   checkAuth,

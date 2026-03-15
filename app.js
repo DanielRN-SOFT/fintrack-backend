@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import usuarioRouter from "./src/routes/usuario.route.js";
 import authRouter from "./src/routes/auth.route.js";
+import cuentaRouter from "./src/routes/cuentas.route.js";
 
 // Inicialiazacion de la aplicacion
 const app = express();
@@ -14,5 +15,6 @@ app.use(cors());
 // Rutas
 app.use("/api", usuarioRouter);
 app.use("/api", authRouter);
+app.use("/api", cuentaRouter);
 
 export default app;
