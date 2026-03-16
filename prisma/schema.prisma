@@ -10,7 +10,6 @@ datasource db {
 model categorias {
   id          Int             @id @default(autoincrement())
   nombre      String          @db.VarChar(60)
-  tipo        categorias_tipo
   created_at  DateTime        @default(now()) @db.Timestamp(0)
   usuarios_id Int
   updated_at  DateTime?       @db.Timestamp(0)
@@ -125,10 +124,7 @@ enum transacciones_tipo {
   Egreso
 }
 
-enum categorias_tipo {
-  Ingreso
-  Egreso
-}
+
 
 enum cuentas_tipo {
   Cash

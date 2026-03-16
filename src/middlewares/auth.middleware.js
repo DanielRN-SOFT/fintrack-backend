@@ -12,6 +12,7 @@ const checkAuth = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
       const decoded = jwt.decode(token, process.env.JWT_SECRET);
       const { id } = decoded;
+     
       req.usuario = await prisma.usuarios.findUnique({
         where: { id },
         select: {
@@ -21,6 +22,7 @@ const checkAuth = async (req, res, next) => {
           roles_id: true,
         },
       });
+     
     } catch (error) {
       const e = new Error("Token no valido o inexistente");
       return res.status(403).json({ msg: e.message, success: false });
