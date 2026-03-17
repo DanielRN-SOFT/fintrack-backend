@@ -75,7 +75,7 @@ export const deleteCuenta = async (req, res) => {
 
     if (existeTransaccion) {
       const error = new Error("Esa cuenta esta asociada a una transaccion");
-      return res.status(400).json({ msg: error.message, success: false });
+      return res.status(403).json({ msg: error.message, success: false });
     }
 
     const results = await prisma.cuentas.delete({

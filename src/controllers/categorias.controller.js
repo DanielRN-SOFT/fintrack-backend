@@ -68,7 +68,7 @@ export const deleteCategoria = async (req, res) => {
 
     if (!existeCategoria) {
       const error = new Error("Esa cuenta no existe");
-      return res.status(400).json({ msg: error.message, success: false });
+      return res.status(403).json({ msg: error.message, success: false });
     }
 
     const existeConcepto = await prisma.conceptos.findFirst({

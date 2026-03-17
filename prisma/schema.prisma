@@ -13,7 +13,7 @@ model categorias {
   nombre      String          @db.VarChar(60)
   created_at  DateTime        @default(now()) @db.Timestamp(0)
   usuarios_id Int
-  updated_at  DateTime?       @db.Timestamp(0)
+  updated_at  DateTime?       @updatedAt
   usuarios    usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_categorias_usuarios1")
   conceptos   conceptos[]
 
@@ -27,7 +27,7 @@ model conceptos {
   created_at    DateTime        @default(now()) @db.Timestamp(0)
   categorias_id Int
   usuarios_id   Int
-  updated_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @updatedAt
   categorias    categorias      @relation(fields: [categorias_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptos_categorias1")
   usuarios      usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_conceptos_usuarios1")
   transacciones transacciones[]
@@ -43,7 +43,7 @@ model cuentas {
   saldo_inicial Decimal         @db.Decimal(10, 2)
   created_at    DateTime        @default(now()) @db.Timestamp(0)
   usuarios_id   Int
-  updated_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @updatedAt
   usuarios      usuarios        @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cuentas_usuarios1")
   transacciones transacciones[]
 
@@ -59,7 +59,7 @@ model metas {
   fecha_limite   DateTime  @db.Date
   created_at     DateTime  @default(now()) @db.Timestamp(0)
   usuarios_id    Int
-  updated_at     DateTime? @db.Timestamp(0)
+  updated_at     DateTime? @updatedAt
   usuarios       usuarios  @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_metas_usuarios1")
 
   @@index([usuarios_id], map: "fk_metas_usuarios1_idx")
@@ -81,7 +81,7 @@ model transacciones {
   usuarios_id  Int
   cuentas_id   Int
   conceptos_id Int
-  updated_at   DateTime?             @db.Timestamp(0)
+  updated_at   DateTime?             @updatedAt
   conceptos    conceptos             @relation(fields: [conceptos_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_conceptos1")
   cuentas      cuentas               @relation(fields: [cuentas_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_cuentas1")
   usuarios     usuarios              @relation(fields: [usuarios_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transacciones_usuarios1")
@@ -103,7 +103,7 @@ model usuarios {
   estado        usuarios_estado
   created_at    DateTime        @default(now()) @db.Timestamp(0)
   roles_id      Int
-  updated_at    DateTime?       @db.Timestamp(0)
+  updated_at    DateTime?       @updatedAt
   categorias    categorias[]
   conceptos     conceptos[]
   cuentas       cuentas[]
