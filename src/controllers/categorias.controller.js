@@ -1,4 +1,4 @@
-import { cuentas_tipo } from "@prisma/client";
+import { categorias_tipo } from "@prisma/client";
 import prisma from "../../prismaClient.js";
 
 export const getCategorias = async (req, res) => {
@@ -31,6 +31,7 @@ export const createCategoria = async (req, res) => {
     const data = {
       nombre: req.body.nombre,
       usuarios_id: req.usuario.id,
+      tipo: categorias_tipo[req.body.tipo],
     };
     const results = await prisma.categorias.create({ data });
     res.json({ results });
@@ -45,6 +46,7 @@ export const updateCategoria = async (req, res) => {
 
     const data = {
       nombre: req.body.nombre,
+      tipo: categorias_tipo[req.body.tipo],
     };
 
     const results = await prisma.categorias.update({
@@ -60,7 +62,9 @@ export const updateCategoria = async (req, res) => {
 export const deleteCategoria = async (req, res) => {
   try {
     let id = parseInt(req.params.id);
-    const existeCategoria = await prisma.categorias.findUnique({ where: { id } });
+    const existeCategoria = await prisma.categorias.findUnique({
+      where: { id },
+    });
 
     if (!existeCategoria) {
       const error = new Error("Esa cuenta no existe");

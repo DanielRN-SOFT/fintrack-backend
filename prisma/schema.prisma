@@ -9,6 +9,7 @@ datasource db {
 
 model categorias {
   id          Int             @id @default(autoincrement())
+  tipo        categorias_tipo
   nombre      String          @db.VarChar(60)
   created_at  DateTime        @default(now()) @db.Timestamp(0)
   usuarios_id Int
@@ -72,7 +73,6 @@ model roles {
 
 model transacciones {
   id           Int                   @id @default(autoincrement())
-  tipo         transacciones_tipo
   fecha        DateTime              @db.Date
   valor        Decimal               @db.Decimal(10, 2)
   descripcion  String                @db.Text
@@ -119,7 +119,7 @@ enum roles_nombre {
   Usuario
 }
 
-enum transacciones_tipo {
+enum categorias_tipo {
   Ingreso
   Egreso
 }

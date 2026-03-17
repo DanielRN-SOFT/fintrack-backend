@@ -5,6 +5,7 @@ import usuarioRouter from "./src/routes/usuario.route.js";
 import authRouter from "./src/routes/auth.route.js";
 import cuentaRouter from "./src/routes/cuentas.route.js";
 import categoriaRouter from './src/routes/categorias.route.js';
+import conceptoRouter from "./src/routes/concepto.route.js";
 
 // Inicialiazacion de la aplicacion
 const app = express();
@@ -18,5 +19,6 @@ app.use("/api", usuarioRouter);
 app.use("/api", authRouter);
 app.use("/api", cuentaRouter);
 app.use("/api", categoriaRouter);
+app.use("/api", conceptoRouter);
 
 export default app;
