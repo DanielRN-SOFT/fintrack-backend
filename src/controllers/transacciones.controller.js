@@ -1,4 +1,5 @@
 import { transacciones_estado } from "@prisma/client";
+import { nowUTC } from "../helpers/date.js";
 import prisma from "../../prismaClient.js";
 
 export const getTransacciones = async (req, res) => {
@@ -38,7 +39,7 @@ export const createTransaccion = async (req, res) => {
   try {
     const usuarios_id = req.usuario.id;
     const data = {
-      fecha: req.body.fecha,
+      fecha: nowUTC(),
       valor: req.body.valor,
       descripcion: req.body.descripcion,
       estado: transacciones_estado[req.body.estado],
@@ -59,7 +60,7 @@ export const updateTransaccion = async (req, res) => {
     const id = parseInt(req.params.id);
     const usuarios_id = req.usuario.id;
     const data = {
-      fecha: req.body.fecha,
+      fecha: nowUTC(),
       valor: req.body.valor,
       descripcion: req.body.descripcion,
       estado: transacciones_estado[req.body.estado],
