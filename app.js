@@ -7,6 +7,7 @@ import cuentaRouter from "./src/routes/cuentas.route.js";
 import categoriaRouter from "./src/routes/categorias.route.js";
 import conceptoRouter from "./src/routes/concepto.route.js";
 import transaccionRouter from "./src/routes/transacciones.route.js";
+import dashboardRouter from "./src/routes/dashboard.controller.js";
 
 // Inicialiazacion de la aplicacion
 const app = express();
@@ -22,5 +23,6 @@ app.use("/api", cuentaRouter);
 app.use("/api", categoriaRouter);
 app.use("/api", conceptoRouter);
 app.use("/api", transaccionRouter);
+app.use("/api", dashboardRouter)
 
 export default app;
