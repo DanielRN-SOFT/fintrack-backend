@@ -62,15 +62,7 @@ export const updateCategoria = async (req, res) => {
 export const deleteCategoria = async (req, res) => {
   try {
     let id = parseInt(req.params.id);
-    const existeCategoria = await prisma.categorias.findUnique({
-      where: { id },
-    });
-
-    if (!existeCategoria) {
-      const error = new Error("Esa cuenta no existe");
-      return res.status(403).json({ msg: error.message, success: false });
-    }
-
+    
     const existeConcepto = await prisma.conceptos.findFirst({
       where: { categorias_id: id },
     });
