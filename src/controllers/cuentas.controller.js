@@ -62,12 +62,6 @@ export const updateCuenta = async (req, res) => {
 export const deleteCuenta = async (req, res) => {
   try {
     let id = parseInt(req.params.id);
-    const existeCuenta = await prisma.cuentas.findUnique({ where: { id } });
-
-    if (!existeCuenta) {
-      const error = new Error("Esa cuenta no existe");
-      return res.status(400).json({ msg: error.message, success: false });
-    }
 
     const existeTransaccion = await prisma.transacciones.findFirst({
       where: { cuentas_id: id },

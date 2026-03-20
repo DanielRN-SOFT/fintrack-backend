@@ -9,7 +9,11 @@ export const getTransacciones = async (req, res) => {
       where: { usuarios_id },
       include: {
         cuentas: true,
-        conceptos: true,
+        conceptos: {
+          include: {
+            categorias: true,
+          },
+        },
       },
     });
     res.json(results);
@@ -26,7 +30,11 @@ export const getTransaccionById = async (req, res) => {
       where: { usuarios_id, id },
       include: {
         cuentas: true,
-        conceptos: true,
+        conceptos: {
+          include: {
+            categorias: true,
+          },
+        },
       },
     });
     res.json(results);

@@ -38,7 +38,7 @@ export const getUsuarios = async (req, res) => {
 
 export const getUsuarioById = async (req, res) => {
   try {
-    // Obtener el id
+    // Obtener el id como entero
     let id = parseInt(req.params.id);
 
     // Encontrar un usuario por su id con PRISMA

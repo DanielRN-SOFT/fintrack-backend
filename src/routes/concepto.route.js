@@ -1,6 +1,5 @@
 import { Router } from "express";
 import validarCategoriaConcepto from "../middlewares/validators/conceptos/validar_categoria_concepto.middleware.js";
-import validarConcepto from "../middlewares/validators/conceptos/validar_concepto.middleware.js";
 import checkRol from "../middlewares/rol.middleware.js";
 import checkAuth from "../middlewares/auth.middleware.js";
 import * as conceptoCtr from "../controllers/conceptos.controller.js";
@@ -19,7 +18,6 @@ router.put(
   "/conceptos/:id",
   checkAuth,
   checkRol,
-  validarConcepto,
   validarCategoriaConcepto,
   conceptoCtr.updateConcepto,
 );
@@ -27,7 +25,6 @@ router.delete(
   "/conceptos/:id",
   checkAuth,
   checkRol,
-  validarConcepto,
   conceptoCtr.deleteConcepto,
 );
 
