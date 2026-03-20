@@ -4,7 +4,7 @@ import checkAuth from "../middlewares/auth.middleware.js";
 import checkRol from "../middlewares/rol.middleware.js";
 import validarCuenta from "../middlewares/validators/transacciones/validar_cuenta.middleware.js";
 import calcularSaldo from "../middlewares/validators/transacciones/calcular_saldo_cuenta.middleware.js";
-import validarConcepto from "../middlewares/validators/transacciones/validar_concepto.middleware.js";
+import validarConcepto from "../middlewares/validators/conceptos/validar_concepto.middleware.js";
 
 const router = Router();
 
