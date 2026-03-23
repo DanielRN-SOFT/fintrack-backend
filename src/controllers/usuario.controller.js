@@ -5,12 +5,14 @@ import generarId from "../helpers/generarId.js";
 
 export const createUsuarios = async (req, res) => {
   try {
+    // Variables principales
+    const { nombre, email, roles_id, password } = req.body;
     // Descomprimir los datos y hashear el password
     const data = {
-      nombre: req.body.nombre,
-      email: req.body.email,
-      password: bcrypt.hashSync(req.body.password, 10),
-      roles_id: req.body.roles_id,
+      nombre,
+      email,
+      roles_id,
+      password: bcrypt.hashSync(password, 10),
       estado: usuarios_estado.Activo,
       token: generarId(),
     };
@@ -38,7 +40,7 @@ export const getUsuarios = async (req, res) => {
 
 export const getUsuarioById = async (req, res) => {
   try {
-    // Obtener el id como entero
+    // Variables principales
     let id = parseInt(req.params.id);
 
     // Encontrar un usuario por su id con PRISMA
@@ -51,29 +53,28 @@ export const getUsuarioById = async (req, res) => {
 
 export const updateUsuarios = async (req, res) => {
   try {
+    // Variables principales
     let id = parseInt(req.params.id);
+    const { nombre, email, roles_id, password, telefono } = req.body;
 
-    const { password } = req.body;
+    // Llamado a la base de datos
     const usuario = await prisma.usuarios.findUnique({ where: { id } });
 
-    if (!usuario) {
-      const error = new Error("El usuario no existe");
-      return res.status(400).json({ msg: error.message, success: false });
-    }
-
-    // Descomprimir los datos y hashear el password
+    // Descomprimir los datos
     const data = {
-      nombre: req.body.nombre,
-      email: req.body.email,
-      roles_id: req.body.roles_id,
+      nombre,
+      email,
+      roles_id,
+      telefono,
       estado: usuarios_estado.Activo,
-      telefono: req.body.telefono,
     };
 
+    // Si la contraseña no es igual a la almacenada es porque la cambio
     if (!(await bcrypt.compare(password, usuario.password))) {
       data.password = bcrypt.hashSync(password, 10);
     }
 
+    // Actualizar una entidad en prisma
     const results = await prisma.usuarios.update({
       where: { id },
       data,
@@ -87,24 +88,18 @@ export const updateUsuarios = async (req, res) => {
 
 export const inactivarUsuarios = async (req, res) => {
   try {
+    // Variables principales
     const id = parseInt(req.params.id);
-    const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
 
-    if (!existeUsuario) {
-      const error = new Error("El usuario no existe");
-      return res.status(400).json({ msg: error.message, success: false });
-    }
-    const estado = "Inactivo";
-
-    let data = {
-      estado,
-    };
-
+    // Inactivar dicho usuario
     const results = await prisma.usuarios.update({
       where: { id },
-      data,
+      data: {
+        estado: "Inactivo",
+      },
     });
 
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -113,24 +108,18 @@ export const inactivarUsuarios = async (req, res) => {
 
 export const activarUsuarios = async (req, res) => {
   try {
+    // Variables principales
     let id = parseInt(req.params.id);
-    const existeUsuario = await prisma.usuarios.findUnique({ where: { id } });
 
-    if (!existeUsuario) {
-      const error = new Error("El usuario no existe");
-      return res.status(400).json({ msg: error.message, success: false });
-    }
-    const estado = "Activo";
-
-    let data = {
-      estado,
-    };
-
+    // Activar el usuario eliminado
     const results = await prisma.usuarios.update({
       where: { id },
-      data,
+      data: {
+        estado: "Activo",
+      },
     });
 
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);

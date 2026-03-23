@@ -3,8 +3,13 @@ import prisma from "../../prismaClient.js";
 
 export const getCuentas = async (req, res) => {
   try {
+    // Variables principales
     const usuarios_id = req.usuario.id;
+
+    // Obtener las cuentas asociadas a dicho usuario
     const results = await prisma.cuentas.findMany({ where: { usuarios_id } });
+
+    // Enviar los resultados
     res.json({ results });
   } catch (error) {
     console.log(error);
@@ -12,12 +17,16 @@ export const getCuentas = async (req, res) => {
 };
 export const getCuentaById = async (req, res) => {
   try {
+    // Variables principales
     const id = parseInt(req.params.id);
     const usuarios_id = parseInt(req.usuario.id);
 
-    const results = await prisma.cuentas.findUnique({
+    // Obtener las cuent  asociada a dicho usuario
+    const results = await prisma.cuentas.findFirst({
       where: { id, usuarios_id },
     });
+
+    // Enviar los resultados
     res.json({ results });
   } catch (error) {
     console.log(error);
@@ -26,13 +35,22 @@ export const getCuentaById = async (req, res) => {
 
 export const createCuenta = async (req, res) => {
   try {
+    // Variables principales
+    const { nombre, tipo, saldo_inicial } = req.body;
+    const id = parseInt(req.usuario.id);
+
+    // Modificar la peticion para agregar el estado
     const data = {
-      nombre: req.body.nombre,
-      tipo: cuentas_tipo[req.body.tipo],
-      saldo_inicial: req.body.saldo_inicial,
-      usuarios_id: req.usuario.id,
+      nombre,
+      saldo_inicial,
+      tipo: cuentas_tipo[tipo],
+      usuarios_id: id,
     };
+
+    // Crear una cuenta (dinero)
     const results = await prisma.cuentas.create({ data });
+
+    // Enviar los resultados
     res.json({ results });
   } catch (error) {
     console.log(error);
@@ -41,18 +59,24 @@ export const createCuenta = async (req, res) => {
 
 export const updateCuenta = async (req, res) => {
   try {
+    // Variables principales
     let id = parseInt(req.params.id);
+    const { nombre, tipo, saldo_inicial } = req.body;
 
+    // Modificar la peticion para incluir el estado
     const data = {
-      nombre: req.body.nombre,
-      tipo: cuentas_tipo[req.body.tipo],
-      saldo_inicial: req.body.saldo_inicial,
+      nombre,
+      saldo_inicial,
+      tipo: cuentas_tipo[tipo],
     };
 
+    // Actualizar el registro
     const results = await prisma.cuentas.update({
       where: { id },
       data,
     });
+
+    // Enviar los resultados
     res.json({ results });
   } catch (error) {
     console.log(error);
@@ -61,20 +85,26 @@ export const updateCuenta = async (req, res) => {
 
 export const deleteCuenta = async (req, res) => {
   try {
+    // Variables globales
     let id = parseInt(req.params.id);
 
+    // Validacion en la base de datos
     const existeTransaccion = await prisma.transacciones.findFirst({
       where: { cuentas_id: id },
     });
 
+    // Verificar que la cuenta no este asociada a una transaccion
     if (existeTransaccion) {
       const error = new Error("Esa cuenta esta asociada a una transaccion");
       return res.status(403).json({ msg: error.message, success: false });
     }
 
+    // Eliminar el registro
     const results = await prisma.cuentas.delete({
       where: { id },
     });
+
+    // Enviar los resultados
     res.json({ results });
   } catch (error) {
     console.log(error);

@@ -4,7 +4,10 @@ import prisma from "../../prismaClient.js";
 
 export const getTransacciones = async (req, res) => {
   try {
+    // Variables principales
     const usuarios_id = req.usuario.id;
+
+    // Traer todas las transacciones con las cuentas, conceptos y categorias
     const results = await prisma.transacciones.findMany({
       where: { usuarios_id },
       include: {
@@ -16,6 +19,8 @@ export const getTransacciones = async (req, res) => {
         },
       },
     });
+
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -24,9 +29,12 @@ export const getTransacciones = async (req, res) => {
 
 export const getTransaccionById = async (req, res) => {
   try {
+    // Variables principales
     const usuarios_id = req.usuario.id;
     const id = parseInt(req.params.id);
-    const results = await prisma.transacciones.findMany({
+
+    // Traer todas las transacciones con las cuentas, conceptos y categorias
+    const results = await prisma.transacciones.findFirst({
       where: { usuarios_id, id },
       include: {
         cuentas: true,
@@ -37,6 +45,8 @@ export const getTransaccionById = async (req, res) => {
         },
       },
     });
+
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -45,18 +55,25 @@ export const getTransaccionById = async (req, res) => {
 
 export const createTransaccion = async (req, res) => {
   try {
+    // Variables principales
     const usuarios_id = req.usuario.id;
+    const { valor, descripcion, estado, cuentas_id, conceptos_id } = req.body;
+
+    // Asignar la fecha actual y el usuario a la creacion de la transaccion
     const data = {
       fecha: nowUTC(),
-      valor: req.body.valor,
-      descripcion: req.body.descripcion,
-      estado: transacciones_estado[req.body.estado],
+      estado: transacciones_estado[estado],
+      valor,
+      descripcion,
       usuarios_id,
-      cuentas_id: req.body.cuentas_id,
-      conceptos_id: req.body.conceptos_id,
+      cuentas_id,
+      conceptos_id,
     };
 
+    // Crear la transaccion
     const results = await prisma.transacciones.create({ data });
+
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -65,19 +82,24 @@ export const createTransaccion = async (req, res) => {
 
 export const updateTransaccion = async (req, res) => {
   try {
+    // Variables principales
     const id = parseInt(req.params.id);
-    const usuarios_id = req.usuario.id;
+    const { valor, descripcion, estado, cuentas_id, conceptos_id } = req.body;
+
+    // Modificacion de la peticion
     const data = {
       fecha: nowUTC(),
-      valor: req.body.valor,
-      descripcion: req.body.descripcion,
-      estado: transacciones_estado[req.body.estado],
-      usuarios_id,
-      cuentas_id: req.body.cuentas_id,
-      conceptos_id: req.body.conceptos_id,
+      valor,
+      descripcion,
+      cuentas_id,
+      conceptos_id,
+      estado: transacciones_estado[estado],
     };
 
+    // Actualizacion de la transaccion
     const results = await prisma.transacciones.update({ where: { id }, data });
+
+    // Envio de resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -86,11 +108,18 @@ export const updateTransaccion = async (req, res) => {
 
 export const deleteTransaccion = async (req, res) => {
   try {
+    // Variables principales
     const id = parseInt(req.params.id);
-    const data = {
-      estado: transacciones_estado.Anulada,
-    };
-    const results = await prisma.transacciones.update({ where: { id }, data });
+
+    // Anular la transaccion
+    const results = await prisma.transacciones.update({
+      where: { id },
+      data: {
+        estado: "Anulada",
+      },
+    });
+
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);
@@ -99,11 +128,18 @@ export const deleteTransaccion = async (req, res) => {
 
 export const activeTransaccion = async (req, res) => {
   try {
+    // Variables principales
     const id = parseInt(req.params.id);
-    const data = {
-      estado: transacciones_estado.Activa,
-    };
-    const results = await prisma.transacciones.update({ where: { id }, data });
+
+    // Activar la transaccion
+    const results = await prisma.transacciones.update({
+      where: { id },
+      data: {
+        estado: "Activa",
+      },
+    });
+
+    // Enviar los resultados
     res.json(results);
   } catch (error) {
     console.log(error);

@@ -12,6 +12,7 @@ const validarConcepto = async (req, res, next) => {
       where: { usuarios_id, id },
     });
 
+    
     // Verificar que exista dicha categoria enviada
     if (!exiteConcepto) {
       const error = new Error(

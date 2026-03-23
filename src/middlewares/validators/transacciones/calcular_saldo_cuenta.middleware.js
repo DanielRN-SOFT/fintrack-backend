@@ -6,7 +6,7 @@ const calcularSaldo = async (req, res, next) => {
     const { cuentas_id, valor, conceptos_id } = req.body;
     const usuarios_id = req.usuario.id;
 
-    // Llamado a la base de datos
+    // Llamado a la base de datos conceptos
     const conceptos = await prisma.conceptos.findFirst({
       where: { id: conceptos_id, usuarios_id },
       include: {
@@ -14,17 +14,27 @@ const calcularSaldo = async (req, res, next) => {
       },
     });
 
+    // Obtener la cuenta
+    const existeCuenta = await prisma.cuentas.findFirst({
+      where: { id: cuentas_id, usuarios_id },
+    });
+
+    const saldo_inicial = parseInt(existeCuenta.saldo_inicial);
+    const valorTransaccion = parseInt(valor);
+
     // Verificar si ingresa o sale dinero
-    const resultadoSueldo =
+    const resultadoSaldo =
       conceptos.categorias.tipo === "Ingreso"
-        ? existeCuenta.saldo_inicial + valor
-        : existeCuenta.saldo_inicial - valor;
+        ? saldo_inicial + valorTransaccion
+        : saldo_inicial - valorTransaccion;
+
+   
 
     // Hacer la actualizacion del nuevo saldo
     await prisma.cuentas.update({
-      where: { usuarios_id, cuentas_id },
+      where: { usuarios_id, id: cuentas_id },
       data: {
-        saldo_inicial: resultadoSueldo,
+        saldo_inicial: resultadoSaldo,
       },
     });
 

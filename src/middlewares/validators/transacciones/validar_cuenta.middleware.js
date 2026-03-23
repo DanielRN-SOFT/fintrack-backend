@@ -3,12 +3,12 @@ import prisma from "../../../../prismaClient.js";
 const validarCuenta = async (req, res, next) => {
   try {
     // Variables principales
-    const { cuentas_id } = req.body;
+    const { cuentas_id, valor} = req.body;
     const usuarios_id = req.usuario.id;
 
     // Llamado a la base de datos
     const existeCuenta = await prisma.cuentas.findFirst({
-      where: { cuentas_id, usuarios_id },
+      where: { id:cuentas_id, usuarios_id },
     });
 
     // Comprobar si esa cuenta existe y esta asociada a dicho usuario
