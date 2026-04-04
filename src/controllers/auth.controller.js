@@ -2,12 +2,14 @@ import prisma from "../../prismaClient.js";
 import bcrypt from "bcryptjs";
 import generarJWT from "../helpers/generarJWT.js";
 import generarId from "../helpers/generarId.js";
+import emailConfirmarCuenta from "../helpers/emailConfirmarCuenta.js";
+import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 
 export const confirmarUsuario = async (req, res) => {
   // Token para confirmar
   const { token } = req.params;
 
-  // Encontrar el usuario por token 
+  // Encontrar el usuario por token
   const usuarioConfirmado = await prisma.usuarios.findFirst({
     where: { token },
   });
@@ -30,6 +32,9 @@ export const confirmarUsuario = async (req, res) => {
 
     // Actualizacion de la informacion
     await prisma.usuarios.update({ where: { id }, data });
+
+    // Se envia el correo al email del usuario en cuestion
+    await emailConfirmarCuenta(usuarioConfirmado);
 
     // Envio de los resultados
     res.json({ msg: "Usuario confirmado exitosamente" });
@@ -101,6 +106,9 @@ export const olvidePassword = async (req, res) => {
       data,
     });
 
+    // Se envia el correo al email del usuario en cuestion
+    emailOlvidePassword(usuario);
+
     // Se envia la informacion
     res.json({
       msg: "Hemos enviado un email con las instrucciones",
@@ -139,7 +147,7 @@ export const recuperarPassword = async (req, res) => {
     const { password } = req.body;
 
     // Encontrar el usuario con el token
-    const usuario = await prisma.usuarios.findFirst({ where: {token} });
+    const usuario = await prisma.usuarios.findFirst({ where: { token } });
 
     // Si el usuario no existe, se genera error
     if (!usuario) {
@@ -154,7 +162,7 @@ export const recuperarPassword = async (req, res) => {
     };
 
     // Se obtiene le id mediante destructuring
-    const {id} = usuario;
+    const { id } = usuario;
 
     // Actualizacion de la informacion
     await prisma.usuarios.update({ where: { id }, data });
