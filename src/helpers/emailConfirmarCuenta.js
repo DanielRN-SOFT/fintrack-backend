@@ -1,5 +1,9 @@
 import nodemailer from "nodemailer";
 import { emailConfirmacion } from "../../emails/templates.js";
+import dotenv from "dotenv";
+dotenv.config();
+console.log(process.env.EMAIL_USER);
+console.log(process.env.EMAIL_PASS);
 
 const emailConfirmarCuenta = async (datos) => {
   // Looking to send emails in production? Check out our Email API/SMTP product!

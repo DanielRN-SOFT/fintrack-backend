@@ -2,7 +2,7 @@ import prisma from "../../prismaClient.js";
 import bcrypt from "bcryptjs";
 import generarJWT from "../helpers/generarJWT.js";
 import generarId from "../helpers/generarId.js";
-import emailConfirmarCuenta from "../helpers/emailConfirmarCuenta.js";
+
 import emailOlvidePassword from "../helpers/emailOlvidePassword.js";
 
 export const confirmarUsuario = async (req, res) => {
@@ -33,8 +33,6 @@ export const confirmarUsuario = async (req, res) => {
     // Actualizacion de la informacion
     await prisma.usuarios.update({ where: { id }, data });
 
-    // Se envia el correo al email del usuario en cuestion
-    await emailConfirmarCuenta(usuarioConfirmado);
 
     // Envio de los resultados
     res.json({ msg: "Usuario confirmado exitosamente" });

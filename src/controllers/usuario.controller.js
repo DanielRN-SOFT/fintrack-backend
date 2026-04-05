@@ -2,6 +2,7 @@ import { usuarios_estado } from "@prisma/client";
 import prisma from "../../prismaClient.js";
 import bcrypt from "bcryptjs";
 import generarId from "../helpers/generarId.js";
+import emailConfirmarCuenta from "../helpers/emailConfirmarCuenta.js";
 
 export const createUsuarios = async (req, res) => {
   try {
@@ -22,8 +23,17 @@ export const createUsuarios = async (req, res) => {
       data,
     });
 
+    // Se envia el correo al email del usuario en cuestion
+    emailConfirmarCuenta({
+      nombre,
+      email,
+      token: results.token,
+    });
+
+    // Se envian los resultados
     res.json({ results });
   } catch (error) {
+    res.json(error);
     console.log(error);
   }
 };

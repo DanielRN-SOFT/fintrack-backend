@@ -12,9 +12,8 @@ const validarEmail = async (req, res, next) => {
     });
 
     if (emailExiste) {
-      return res
-        .status(400)
-        .json({ msg: "Ese email ya esta registrado", success: false });
+      const error = new Error("Ese email ya esta registrado");
+      return res.status(400).json({ msg: error.message, success: false });
     }
 
     // Si no existe el email continue al controlador
@@ -24,4 +23,4 @@ const validarEmail = async (req, res, next) => {
   }
 };
 
-export default validarEmail
+export default validarEmail;

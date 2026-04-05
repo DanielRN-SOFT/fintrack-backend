@@ -8,13 +8,29 @@ import categoriaRouter from "./src/routes/categorias.route.js";
 import conceptoRouter from "./src/routes/concepto.route.js";
 import transaccionRouter from "./src/routes/transacciones.route.js";
 import dashboardRouter from "./src/routes/dashboard.controller.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Inicialiazacion de la aplicacion
 const app = express();
 
+const dominiosPermitidos = [process.env.FRONTEND_URL];
+
+// Optiones para habiliar URLs
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (dominiosPermitidos.indexOf(origin) !== 1) {
+      // El origin del request esta permitido
+      callback(null, true);
+    } else {
+      callback(new Error("No permitido en CORS"));
+    }
+  },
+};
+
 // Middlewares
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Rutas
 app.use("/api", usuarioRouter);
@@ -23,6 +39,6 @@ app.use("/api", cuentaRouter);
 app.use("/api", categoriaRouter);
 app.use("/api", conceptoRouter);
 app.use("/api", transaccionRouter);
-app.use("/api", dashboardRouter)
+app.use("/api", dashboardRouter);
 
 export default app;
