@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { emailResetPassword } from "../../emails/templates";
+import { emailResetPassword } from "../../emails/templates.js";
 
 const emailOlvidePassword = async (datos) => {
   // Looking to send emails in production? Check out our Email API/SMTP product!

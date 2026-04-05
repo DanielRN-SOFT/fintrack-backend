@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { emailConfirmacion } from "../../emails/templates";
+import { emailConfirmacion } from "../../emails/templates.js";
 
 const emailConfirmarCuenta = async (datos) => {
   // Looking to send emails in production? Check out our Email API/SMTP product!
