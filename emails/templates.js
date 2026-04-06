@@ -44,18 +44,10 @@ export const emailConfirmacion = ({ nombre, token }) => `
             <!-- Botón -->
             <tr>
               <td align="center" style="padding:20px 0;">
-                <a href="${process.env.FRONTEND_URL}/auth/confirmar/${token}"
+                <a href="${process.env.FRONTEND_URL}/confirmar/${token}"
                    style="background:#14B86A; color:#fff; padding:12px 24px; border-radius:8px; text-decoration:none; font-weight:bold; display:inline-block;">
                   Confirmar Cuenta
                 </a>
-              </td>
-            </tr>
-
-            <!-- Link alternativo -->
-            <tr>
-              <td style="color:#888; font-size:12px; text-align:center;">
-                <p>O copia este enlace en tu navegador:</p>
-                <p>${process.env.FRONTEND_URL}/confirmar/${token}</p>
               </td>
             </tr>
 

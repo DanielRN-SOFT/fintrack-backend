@@ -18,7 +18,7 @@ const emailConfirmarCuenta = async (datos) => {
   // Enviar Eamail
   const { nombre, email, token } = datos;
   const info = await transporter.sendMail({
-    from: `"FinTrack 💸" <${process.env.EMAIL_USER}>`,
+    from: `"FinTrack" <${process.env.EMAIL_USER}>`,
     to: email,
     subject: "Confirma tu cuenta en FinTrack",
     html: emailConfirmacion({ nombre, token }),

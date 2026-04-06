@@ -17,7 +17,7 @@ export const confirmarUsuario = async (req, res) => {
   // Si no hay resultados en la consulta, se manda el error
   if (!usuarioConfirmado) {
     const error = new Error("Token no valido");
-    return res.status(404).json({ msg: error.message });
+    return res.status(404).json({ msg: error.message, success: false });
   }
 
   // Se modifican los datos, token = null y confirmado true
@@ -33,9 +33,8 @@ export const confirmarUsuario = async (req, res) => {
     // Actualizacion de la informacion
     await prisma.usuarios.update({ where: { id }, data });
 
-
     // Envio de los resultados
-    res.json({ msg: "Usuario confirmado exitosamente" });
+    res.json({ msg: "Usuario confirmado exitosamente", success: true });
   } catch (error) {
     console.log(error);
   }
@@ -52,19 +51,19 @@ export const autenticarUsuario = async (req, res) => {
     // En caso de que no exista, genere un error
     if (!usuario) {
       const error = new Error("El email no existe");
-      return res.status(403).json({ msg: error.message });
+      return res.status(403).json({ msg: error.message, success: false });
     }
 
     // Validar que la cuenta este confirmada
     if (!usuario.confirmado) {
       const error = new Error("Tu cuenta no ha sido confirmada");
-      return res.status(403).json({ msg: error.message });
+      return res.status(403).json({ msg: error.message, success: false });
     }
 
     // Validar que las contraseñan coincidan
     if (!(await bcrypt.compare(password, usuario.password))) {
       const error = new Error("La contraseña es incorrecta");
-      return res.status(403).json({ msg: error.message });
+      return res.status(403).json({ msg: error.message, success: false });
     }
 
     // Envio de la informacion
@@ -150,7 +149,7 @@ export const recuperarPassword = async (req, res) => {
     // Si el usuario no existe, se genera error
     if (!usuario) {
       const error = new Error("Hubo un error");
-      return res.status(400).json({ msg: error.message });
+      return res.status(400).json({ msg: error.message, success: false });
     }
 
     // Se modifica el objeto con la nuevo info
