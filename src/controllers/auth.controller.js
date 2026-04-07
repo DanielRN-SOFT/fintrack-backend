@@ -180,3 +180,8 @@ export const recuperarPassword = async (req, res) => {
     console.log(error);
   }
 };
+
+export const perfil = (req, res) => {
+  const {usuario} = req;
+  res.json(usuario);
+}

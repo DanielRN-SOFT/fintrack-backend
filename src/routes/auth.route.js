@@ -1,5 +1,6 @@
 import { Router } from "express";
 import * as authCtr from "../controllers/auth.controller.js";
+import checkAuth from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
@@ -12,4 +13,5 @@ router
   .get(authCtr.comprobarToken)
   .post(authCtr.recuperarPassword);
 
+router.get("/auth/perfil", checkAuth, authCtr.perfil);
 export default router;
