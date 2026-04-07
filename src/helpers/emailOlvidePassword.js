@@ -11,12 +11,12 @@ const emailOlvidePassword = async (datos) => {
     },
   });
 
-  // Enviar Eamail
+  // Enviar Email
   const { nombre, email, token } = datos;
   const info = await transporter.sendMail({
-    from: `"FinTrack 💸" <${process.env.EMAIL_USER}>`,
+    from: `"FinTrack " <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: "Resetea tú contraseña en Fintrack",
+    subject: "Restaura tú contraseña en Fintrack",
     html: emailResetPassword({ nombre, token }),
   });
 

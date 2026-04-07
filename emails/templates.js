@@ -94,7 +94,7 @@ export const emailResetPassword = ({ nombre, token }) => `
 
         <tr>
           <td align="center">
-            <a href="${process.env.FRONTEND_URL}/olvide-password/${token}"
+            <a href="${process.env.FRONTEND_URL}/change-password/${token}"
               style="background:#ef4444;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;">
               Cambiar Contraseña
             </a>

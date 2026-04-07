@@ -81,6 +81,7 @@ export const autenticarUsuario = async (req, res) => {
 export const olvidePassword = async (req, res) => {
   try {
     // Variables principales
+    console.log(req.body);
     const { email } = req.body;
 
     // Verificar que exista el usuario con el email ingresado
@@ -104,7 +105,11 @@ export const olvidePassword = async (req, res) => {
     });
 
     // Se envia el correo al email del usuario en cuestion
-    emailOlvidePassword(usuario);
+    emailOlvidePassword({
+      nombre: usuario.nombre,
+      email: usuario.email,
+      token: data.token,
+    });
 
     // Se envia la informacion
     res.json({
@@ -131,7 +136,9 @@ export const comprobarToken = async (req, res) => {
     }
 
     // Si pasa la validacion, mensaje de confirmacion
-    res.status(200).json({ msg: "Token valido y el usuario existe" });
+    res
+      .status(200)
+      .json({ msg: "Token valido y el usuario existe", success: true });
   } catch (error) {
     console.log(error);
   }
@@ -165,7 +172,10 @@ export const recuperarPassword = async (req, res) => {
     await prisma.usuarios.update({ where: { id }, data });
 
     // Se envia la informacion confirmando la accion
-    res.json({ msg: "La contraseña ha sido restablecida exitosamente" });
+    res.json({
+      msg: "La contraseña ha sido restablecida exitosamente",
+      success: true,
+    });
   } catch (error) {
     console.log(error);
   }
