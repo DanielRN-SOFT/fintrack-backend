@@ -9,7 +9,7 @@ export const getTransacciones = async (req, res) => {
 
     // Traer todas las transacciones con las cuentas, conceptos y categorias
     const results = await prisma.transacciones.findMany({
-      where: { usuarios_id },
+      where: { usuarios_id, estado: transacciones_estado.Activa },
       include: {
         cuentas: true,
         conceptos: {
@@ -17,6 +17,9 @@ export const getTransacciones = async (req, res) => {
             categorias: true,
           },
         },
+      },
+      orderBy: {
+        fecha: "desc",
       },
     });
 
@@ -74,7 +77,7 @@ export const createTransaccion = async (req, res) => {
     const results = await prisma.transacciones.create({ data });
 
     // Enviar los resultados
-    res.json(results);
+    res.json({ results, success: true });
   } catch (error) {
     console.log(error);
   }
@@ -100,7 +103,7 @@ export const updateTransaccion = async (req, res) => {
     const results = await prisma.transacciones.update({ where: { id }, data });
 
     // Envio de resultados
-    res.json(results);
+    res.json({ results, success: true });
   } catch (error) {
     console.log(error);
   }

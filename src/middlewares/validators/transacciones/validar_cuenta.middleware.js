@@ -20,7 +20,7 @@ const validarCuenta = async (req, res, next) => {
     // Verificar que el saldo sea suficiente para la transaccion
     if (existeCuenta.saldo_inicial < valor) {
       const error = new Error(
-        "El saldo de esa cuenta es insuficiente para el valo de la transaccion",
+        "El saldo de esa cuenta es insuficiente para el valor de la transaccion",
       );
       return res.status(403).json({ msg: error.message, success: false });
     }
