@@ -25,7 +25,7 @@ const validarCuenta = async (req, res, next) => {
       return res.status(403).json({ msg: error.message, success: false });
     }
 
-    // Verificar que el saldo sea suficiente para la transaccion si es un egreso
+    // Verif  icar que el saldo sea suficiente para la transaccion si es un egreso
     if (
       existeCuenta.saldo_inicial < valor &&
       tipoTransaccion.categorias.tipo === "Egreso"

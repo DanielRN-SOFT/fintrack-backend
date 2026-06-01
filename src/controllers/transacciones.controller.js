@@ -7,24 +7,40 @@ export const getTransacciones = async (req, res) => {
     // Variables principales
     const usuarios_id = req.usuario.id;
 
-    // Traer todas las transacciones con las cuentas, conceptos y categorias
-    const results = await prisma.transacciones.findMany({
-      where: { usuarios_id, estado: transacciones_estado.Activa },
-      include: {
-        cuentas: true,
-        conceptos: {
-          include: {
-            categorias: true,
-          },
+    // Leer parametros de paginacion con valores por defecto
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    // Ejecutar ambas consultas en paralelo para eficiencia
+    const [total, results] = await Promise.all([
+      prisma.transacciones.count({
+        where: { usuarios_id, estado: transacciones_estado.Activa },
+      }),
+      prisma.transacciones.findMany({
+        where: { usuarios_id, estado: transacciones_estado.Activa },
+        include: {
+          cuentas: true,
+          conceptos: { include: { categorias: true } },
         },
-      },
-      orderBy: {
-        fecha: "desc",
-      },
-    });
+        orderBy: { fecha: "desc" },
+        skip,
+        take: limit,
+      }),
+    ]);
 
     // Enviar los resultados
-    res.json(results);
+    res.json({
+      data: results,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        hasNextPage: page < Math.ceil(total / limit),
+        hasPrevPage: page > 1,
+      },
+    });
   } catch (error) {
     console.log(error);
   }
