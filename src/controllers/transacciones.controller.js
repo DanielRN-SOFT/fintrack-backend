@@ -1,4 +1,4 @@
-import { transacciones_estado } from "@prisma/client";
+import { categorias_tipo, transacciones_estado } from "@prisma/client";
 import { nowUTC } from "../helpers/date.js";
 import prisma from "../../prismaClient.js";
 
@@ -12,13 +12,52 @@ export const getTransacciones = async (req, res) => {
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
+    // Filtros de la API
+    const { type, search, category, order_by, fromDate, untilDate } =
+      req.query;
+
+    let filters = {};
+
+    if (search) {
+      filters.OR = [
+        { descripcion: { contains: search } },
+        { conceptos: { nombre: { contains: search } } },
+      ];
+    }
+
+    if (type) {
+      filters.conceptos = {
+        ...(filters.conceptos || {}),
+        categorias: { tipo: type },
+      };
+    }
+
+    if (category) {
+      filters.conceptos = {
+        ...(filters.conceptos || {}),
+        categorias_id: parseInt(category),
+      };
+    }
+
+    if (fromDate || untilDate) {
+      filters.fecha = {
+        ...(fromDate && { gte: new Date(fromDate) }),
+        ...(untilDate && { lte: new Date(untilDate) }),
+      };
+    }
+
+    const where = {
+      usuarios_id,
+      estado: transacciones_estado.Activa,
+      ...filters,
+    };
+
+
     // Ejecutar ambas consultas en paralelo para eficiencia
     const [total, results] = await Promise.all([
-      prisma.transacciones.count({
-        where: { usuarios_id, estado: transacciones_estado.Activa },
-      }),
+      prisma.transacciones.count({ where }),
       prisma.transacciones.findMany({
-        where: { usuarios_id, estado: transacciones_estado.Activa },
+        where,
         include: {
           cuentas: true,
           conceptos: { include: { categorias: true } },
